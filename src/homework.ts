@@ -1,5 +1,5 @@
 // Helper function to validate non-negative numbers
-function validateNumberValue(value: number, valueName: string) {
+function validateNumberValue(value: number, valueName: string): void {
     // Capitalize first letter
     valueName = valueName.charAt(0).toUpperCase() + valueName.slice(1);
 
@@ -9,7 +9,7 @@ function validateNumberValue(value: number, valueName: string) {
     if (!isFinite(value)) throw new Error(`${valueName} cannot be less than zero.`);
 }
 
-function factorial(n: number) {
+function factorial(n: number): number {
     validateNumberValue(n, "number");
 
     if (!Number.isInteger(n)) throw new Error("Number must be integer.");
@@ -23,7 +23,7 @@ function multiply(...numbers: number[]): number {
     return numbers.reduce((a, b) => a * b);
 }
 
-function reverseString(str: string) {
+function reverseString(str: string): string {
     return str.split("").reverse().join("");
 }
 
@@ -42,39 +42,43 @@ class Admin implements IUser {
 }
 
 abstract class Car {
-    constructor(protected mileage: number, protected fuel: number) {
-        validateNumberValue(mileage, "mileage");
-        validateNumberValue(mileage, "fuel amount");
+    constructor(protected _mileage: number, protected _fuel: number) {
+        validateNumberValue(_mileage, "mileage");
+        validateNumberValue(_mileage, "fuel amount");
     }
 
-    public abstract drive(distance: number);
+    public abstract drive(distance: number): void;
 
-    public abstract refuel(quantity: number);
+    public abstract refuel(quantity: number): void;
 }
 
 class RealCar extends Car {
-    constructor(mileage: number, fuel: number, private tankCapacity: number, private fuelPerKilometre: number) {
-        super(mileage, fuel);
-        validateNumberValue(tankCapacity, "tank capacity");
-        validateNumberValue(fuelPerKilometre, "fuel per kilometre");
+    constructor(_mileage: number, _fuel: number, private _tankCapacity: number, private _fuelPerKilometre: number) {
+        super(_mileage, _fuel);
+        validateNumberValue(_tankCapacity, "tank capacity");
+        validateNumberValue(_fuelPerKilometre, "fuel per kilometre");
 
-        if (fuel > tankCapacity) throw new Error("Fuel amount cannot be more than tank capacity.");
+        if (_fuel > _tankCapacity) throw new Error("Fuel amount cannot be more than tank capacity.");
     }
 
-    public drive(distance: number) {
+    public drive(distance: number): void {
         validateNumberValue(distance, "distance");
-        const fuelSpent = Math.min(this.fuelPerKilometre * distance, this.fuel);
-        this.fuel -= fuelSpent;
-        this.mileage += fuelSpent / this.fuelPerKilometre;
+        const fuelSpent = Math.min(this._fuelPerKilometre * distance, this._fuel);
+        this._fuel -= fuelSpent;
+        this._mileage += fuelSpent / this._fuelPerKilometre;
 
-        if (this.fuel <= 0.001) console.log("You need to refuel.");
+        if (this._fuel <= 0.001) console.log("You need to refuel.");
     }
 
-    public refuel(fuel: number) {
+    public refuel(fuel: number): void {
         validateNumberValue(fuel, "quantity");
 
-        if (this.fuel + fuel > this.tankCapacity) throw new Error("Fuel amount cannot be more than tank capacity.");
+        if (this._fuel + fuel > this._tankCapacity) throw new Error("Fuel amount cannot be more than tank capacity.");
 
-        this.fuel += fuel;
+        this._fuel += fuel;
     }
+
+    public get mileage() { return this._mileage; }
+
+    public get fuel() { return this._fuel; }
 }
